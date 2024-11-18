@@ -1,5 +1,19 @@
 import { db } from '../configs/db.ts';
 
+export async function updateGroupMembers(options) {
+    const store = db();
+    const {
+        code,
+        members
+    } = options;
+
+    return store.query(`
+        UPDATE groups 
+        SET members = ?
+        WHERE code = ?;
+    `, [JSON.stringify(members), code]);
+}
+
 export async function getMembers(options) {
     const store = db();
     const { code } = options;

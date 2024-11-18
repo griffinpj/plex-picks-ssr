@@ -19,6 +19,7 @@ import * as plexClient from './lib/plex/client.ts';
 
 import { db } from './configs/db.ts';
 import routes from './routes/index.ts';
+import * as groups from './models/groups.ts';
 
 const app = new Application({ serverConstructor: HttpServerStd });
 const sqlite = db();
@@ -31,36 +32,34 @@ const layer = new InMemoryLayer();
 class EchoConsumer extends BaseConsumer {
     async onConnect() {
         const ctx = this.context;
-        const sessionId = ctx.state.session.get('id');
+        const alias = ctx.state.session.get('alias');
+        const channel = ctx.state.session.get('channel');
         
-        console.log('Socket user id ' + sessionId);
-
-        // // add this consumer to group "foo"
-        // await this.groupJoin("foo");
-        // // send group message to all consumers in group "foo", including "self"
-        // await this.layer.groupSend("foo", "new user joined");
+        if (channel) {
+            await this.groupJoin(channel);
+            const group = await groups.getGroup({
+                code: channel
+            });
+            await this.layer.groupSend(channel, JSON.stringify(group));
+        }
     }
 
     // handle group messages
     async onGroupMessage(group: string, message: string | Uint8Array) {
-        this.send(`${group} says ${message}`)
+        this.send(message)
     }
 
     // handle client messages
     async onText(text: string) {
-        this.send(text);
+        const ctx = this.context;
+        const channel = ctx.state.session.get('channel');
+        const group = await groups.getGroup({
+            code: channel
+        });
+
+        await this.layer.groupSend(channel, JSON.stringify(group));
     }
 }
-
-class JSONEchoConsumer
-    extends JSONConsumer {
-    // deno-lint-ignore require-await
-    async onJSON(data: { group: string }) {
-        // join group
-        this.groupJoin(data.group);
-    }
-}
-
 
 const router = new Router();
 
@@ -152,7 +151,6 @@ app.use(async (context, next) => {
 });
 
 router.all("/ws", mountConsumer(EchoConsumer, layer));
-router.all("/ws-json", mountConsumer(JSONEchoConsumer, layer));
 
 routes.forEach((route) => {
     router[route.method](route.path, route.handler);

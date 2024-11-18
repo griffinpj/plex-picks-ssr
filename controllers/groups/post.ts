@@ -5,7 +5,7 @@ import * as groups from '../../models/groups.ts';
 export default async function (ctx) {
     const user = ctx.state.user;
 
-    const newCode = nanoid(6).toUpperCase();
+    const newCode = nanoid(4).toUpperCase();
     
     const data = await groups.createGroup({
         code: newCode,
@@ -25,6 +25,8 @@ export default async function (ctx) {
         ctx.response.status = Status.BAD;
         return;
     }
+    
+    ctx.state.session.set('channel', groupCode);
 
     ctx.response.status = Status.OK;
     ctx.response.body = {

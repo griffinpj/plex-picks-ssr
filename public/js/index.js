@@ -1,26 +1,57 @@
 $(document).ready(function() {
-    const { ws, jsonws } = setupSockets();
+    const { ws } = setupSockets();
 
-    ws.onopen = () => {
-      console.log("sending 'foo'");
-      ws.send('foo');
-    }
-
-    jsonws.onopen = () => {
-      console.log("sending json");
-      jsonws.send(JSON.stringify({ ping: new Date().getTime() }));
-    }
+    ws.addEventListener("message", (e) => {
+        try {
+            const data = JSON.parse(e.data);
+            updateGroup(data); 
+        } catch (e) {
+            console.log(e);
+            console.log("received_ws", e.data)
+        }
+    });
 
     window.ws = ws;
-    window.jsonws = jsonws;
     
     plexAuthentication();
     groupActions();
+    headerActions();
 });
+
+function updateGroup (group) {
+    $.ajax({
+        url: `/groups/${group.code}/table`,
+        method: 'get'
+    }).done((data) => {
+        if (data.html) {
+            $('#j-members-table').html(data.html);
+        }
+    });
+}
+
+function headerActions () {
+    const $updateAliasInput = $('#j-alias-input');
+    const $updateAlias = $('#j-update-alias');
+
+    $updateAlias.on('click', function () {
+        $updateAlias.addClass('is-loading');
+        $.ajax({
+            url: `/users?alias=${$updateAliasInput.val()}`,
+            method: 'patch'
+        }).done((data) => {
+            ws.send('hello');
+        }).always(() => {
+            $updateAlias.removeClass('is-loading');
+        });
+    });
+}
 
 function groupActions () {
     const $createButton = $('#j-create-group');
-    $('#j-create-group').on('click', function (e) {
+    const $joinButton = $('#j-join-group');
+    const $joinInput = $('#j-join-input');
+
+    $createButton.on('click', function (e) {
         $createButton.addClass('is-loading');
         $.ajax({
             url: '/groups',
@@ -31,6 +62,30 @@ function groupActions () {
             }
         }).always(() => {
             $createButton.removeClass('is-loading');
+        });
+    });
+
+    $joinButton.on('click', function (e) {
+        const joinCode = $joinInput.val();
+
+        if (!joinCode) {
+            return;
+        }
+
+        if (joinCode.length > 6) {
+            return;
+        }
+
+        $joinButton.addClass('is-loading');
+        $.ajax({
+            url: `/groups/${joinCode}/members`,
+            method: 'post'
+        }).done((data) => {
+            if (data.code) {
+                window.location = `/groups/${data.code}`;
+            }
+        }).always(() => {
+            $joinButton.removeClass('is-loading');
         });
     });
 }
@@ -57,11 +112,8 @@ function setupSockets() {
     const host = window.location.host;
     const scheme = window.location.protocol === "http:" ? "ws" : "wss";
     const baseURL = `${scheme}://${host}`;
-    const jsonws = new WebSocket(baseURL + '/ws-json');
     const ws = new WebSocket(baseURL + '/ws');
 
-    ws.addEventListener("message", (e) => console.log("received_ws", e.data));
-    jsonws.addEventListener("message", (e) => console.log("received_json", JSON.parse(e.data)));
     
-    return { jsonws, ws };
+    return { ws };
 }

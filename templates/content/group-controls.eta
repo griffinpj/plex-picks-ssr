@@ -11,7 +11,7 @@
 
         <div class="field has-addons">
             <div class="control">
-                <input class="input is-normal" type="text" placeholder="Join Group">
+                <input id="j-join-input" class="input is-normal" type="text" placeholder="Join Group">
             </div>
             <div class="control">
                 <button id="j-join-group" class="button is-info">

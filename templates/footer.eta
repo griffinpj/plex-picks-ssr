@@ -1,16 +1,12 @@
 <footer class="footer">
-    <% if (it.user.token) { %>
-        <div class="content has-text-centered mb-0 pt-0">
-            <strong class="has-text-warning">Authenticated</strong> with <a class="has-text-link" href="https://www.plex.tv/">Plex</a>
-        </div>
-    <% } %>
     <div class="content has-text-centered pt-0">
+        <% if (it.user.token) { %>
+            <strong class="has-text-warning">Authenticated</strong> with <a class="has-text-link" href="https://www.plex.tv/">Plex</a> and 
+        <% } %>
+
         <strong class="has-text-primary">Connected</strong> as <strong><%= it.user.alias %></strong>
     </div>
-    <div class="content has-text-centered pt-0 mb-0">
-        <strong>Built</strong> with <a class="has-text-link" href="https://deno.com">Deno</a>
-    </div>
     <div class="container is-flex is-justify-content-center mt-0 p-0">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Deno.svg/1280px-Deno.svg.png" width="40px;">
+        <img href="https://deno.com" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Deno.svg/1280px-Deno.svg.png" width="40px;">
     </div>
 </footer>
