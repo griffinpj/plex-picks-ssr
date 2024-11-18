@@ -1,0 +1,46 @@
+<section class="section">
+    <nav class="breadcrumb is-centered has-arrow-separator" aria-label="breadcrumbs">
+      <ul>
+        <li class="is-active"><a aria-current="page" href="#">Assemble</a></li>
+        <li><a href="#">Pick</a></li>
+        <li><a href="#">Results</a></li>
+      </ul>
+    </nav>
+    <progress class="progress is-normal" value="33" max="100">
+      33%
+    </progress>
+    <% if (it.group.owner === it.user.id) { %>
+        <div class="container is-flex is-justify-content-center  is-align-content-space-around">
+            <%= it.user.alias %> is the&nbsp;<strong class="has-text-info">Owner</strong>
+        </div>
+    <% } %>
+    <% if (it.group && it?.members && Object.keys(it.members).length) { %>
+        <div class="container is-flex is-justify-content-center  is-align-content-space-around">
+           
+            <table class="table">
+              <thead>
+                <tr>
+                  <th><abbr title="Position">Position</abbr></th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                  <% it.group.members.forEach((memberId, i) => { 
+                        const member = it.members[memberId];
+                        if (!member) {
+                            return;
+                        } %>
+
+                        <tr class="<%= it.group.owner === memberId ? 'is-selected' : '' %>">
+                          <th><%= i + 1 %></th>
+                          <td><%= member.alias %></td>
+                        </tr>
+
+                  <% }); %>
+              </tbody>
+            </table>
+
+        </div>
+    <% } %>
+</section>
+

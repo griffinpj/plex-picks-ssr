@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <%~ include ('/header'); %>
+    <body>
+        <%~ include ('/content/header-controls', it); %>
+        <% if (it.group?.code && it.group?.members) { %>
+            <%~ include ('/content/group-info', it); %>
+        <% } else { %>
+            <%~ include ('/content/group-controls', it); %>
+        <% } %>
+        <%~ include ('/footer', it); %>
+    </body>
+</html>

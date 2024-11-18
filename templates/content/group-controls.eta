@@ -1,0 +1,24 @@
+<section class="section">
+    <div class="container is-flex is-justify-content-center  is-align-content-space-around">
+
+        <% if (it.user.token) { %> 
+            <div class="field has-addons mr-6">
+                <button id="j-create-group" class="button is-danger">
+                    Create
+                </button>
+            </div>
+        <% } %> 
+
+        <div class="field has-addons">
+            <div class="control">
+                <input class="input is-normal" type="text" placeholder="Join Group">
+            </div>
+            <div class="control">
+                <button id="j-join-group" class="button is-info">
+                    Join
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>

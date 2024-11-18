@@ -1,0 +1,33 @@
+<section class="section">
+    <div class="hero is-info">
+        <div class="hero-body">
+            <% if (it.group && it.group.code) { %>
+                <p class="title"> <%= it.group.code %> </p>
+                <p class="subtitle"> Assemble your <strong>party!</strong></p>
+            <% } else { %>
+                <p class="title"> Plex picks </p>
+                <p class="subtitle"> Choose your <strong>movie!</strong></p>
+            <% } %>
+            <div class="level">
+                <div class="level-right">
+                    <button class="button is-<%= it.user.token ? 'primary' : 'warning' %> j-authenticate-plex" <% if (it.user.token) { %> disabled <% } %>>
+                        <span>
+                            <%= it.user.token ? 'Authenticated' : 'Authenticate' %>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="field has-addons">
+                    <div class="control">
+                        <input class="input is-normal" type="text" value="<%= it.user.alias || '' %>" placeholder="Update alias">
+                    </div>
+                    <div class="control">
+                        <button class="button is-success">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
