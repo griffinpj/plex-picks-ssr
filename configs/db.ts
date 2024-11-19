@@ -9,7 +9,9 @@ export function db () {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 code TEXT,
                 owner TEXT,
-                members TEXT
+                members TEXT,
+                stage TEXT,
+                movies TEXT
             )
         `);
     }

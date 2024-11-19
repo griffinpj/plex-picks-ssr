@@ -32,7 +32,6 @@ const layer = new InMemoryLayer();
 class EchoConsumer extends BaseConsumer {
     async onConnect() {
         const ctx = this.context;
-        const alias = ctx.state.session.get('alias');
         const channel = ctx.state.session.get('channel');
         
         if (channel) {
@@ -40,7 +39,10 @@ class EchoConsumer extends BaseConsumer {
             const group = await groups.getGroup({
                 code: channel
             });
-            await this.layer.groupSend(channel, JSON.stringify(group));
+            await this.layer.groupSend(channel, JSON.stringify({
+                group:  group,
+                user: ctx.state.user
+            }));
         }
     }
 
@@ -57,7 +59,10 @@ class EchoConsumer extends BaseConsumer {
             code: channel
         });
 
-        await this.layer.groupSend(channel, JSON.stringify(group));
+        await this.layer.groupSend(channel, JSON.stringify({
+            group:  group,
+            user: ctx.state.user
+        }));
     }
 }
 
@@ -84,6 +89,7 @@ app.use(async (ctx, next) => {
     const pin = ctx.state.session.get('plex-pin');
     let token = ctx.state.session.get('plex-token');
     let alias = ctx.state.session.get('alias');
+    let picks = ctx.state.session.get('picks');
 
     if (pin && !token) {
         token = await plexClient.checkForAuthToken(pin);
@@ -132,7 +138,8 @@ app.use(async (ctx, next) => {
         alias,
         id: sessionId,
         pin,
-        token
+        token,
+        picks
     };
 
     return await next();

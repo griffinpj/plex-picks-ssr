@@ -5,6 +5,11 @@ export default async function (ctx) {
     const group = await groups.getGroup({ code: ctx.params.id?.toUpperCase().trim() });
     const members = await groups.getMembers({ code: group.code });
 
+    if (!group || !group.code) {
+        ctx.response.redirect('/');
+        return;
+    }
+
     ctx.state.session.set('channel', group.code);
     ctx.response.body = ctx.eta.render('./index', {
         user,

@@ -6,7 +6,7 @@ export default async function (ctx) {
     const members = await groups.getMembers({ code: group.code });
 
     ctx.response.body = { 
-        html: ctx.eta.render('./content/members-table', {
+        html: ctx.eta.render('./content/group-info', {
             user,
             group,
             members

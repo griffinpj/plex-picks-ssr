@@ -19,7 +19,8 @@
     "jsr:@std/uuid@*": "1.0.4",
     "npm:nanoid@*": "5.0.8",
     "npm:path-to-regexp@6.2.1": "6.2.1",
-    "npm:plex-oauth@*": "2.1.0"
+    "npm:plex-oauth@*": "2.1.0",
+    "npm:xml-js@*": "1.6.11"
   },
   "jsr": {
     "@oak/commons@1.0.0": {
@@ -111,6 +112,15 @@
       "integrity": "sha512-q/T/ooR7Hc1qqKN08k5x6FuVeJ2a65RBxNlnF4ug0aH3iViREp8iT3siEaI4jEFyxUmZdQaY5JLItgD+dQv4KQ==",
       "dependencies": [
         "axios"
+      ]
+    },
+    "sax@1.4.1": {
+      "integrity": "sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg=="
+    },
+    "xml-js@1.6.11": {
+      "integrity": "sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==",
+      "dependencies": [
+        "sax"
       ]
     }
   },

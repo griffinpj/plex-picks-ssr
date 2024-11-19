@@ -1,5 +1,4 @@
 export default function (ctx) {
-    console.log(ctx.request.url)
     const newAlias = ctx.request.url.searchParams.get('alias');
 
     if (!newAlias || !newAlias.length) {

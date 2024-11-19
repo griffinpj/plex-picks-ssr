@@ -4,7 +4,9 @@
     <body>
         <%~ include ('/content/header-controls', it); %>
         <% if (it.group?.code && it.group?.members) { %>
-            <%~ include ('/content/group-info', it); %>
+            <section id="j-group-info" class="section">
+                <%~ include ('/content/group-info', it); %>
+            </section>
         <% } else { %>
             <%~ include ('/content/group-controls', it); %>
         <% } %>

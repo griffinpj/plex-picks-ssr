@@ -1,4 +1,6 @@
+import * as groups from '../models/groups.ts';
 import * as plexClient from '../lib/plex/client.ts';
+import * as plexApi from '../lib/plex/api.ts';
 
 export async function authenticate (ctx) {
     let pin: number | null = null;
@@ -17,3 +19,26 @@ export async function authenticate (ctx) {
     ctx.response.body = { url, pin };
 };
 
+export async function getThumbnail (ctx) {
+    const owner = await groups.getGroupOwner({ code: ctx.params.id.toUpperCase().trim() });
+    const token = owner.token;
+
+    const metaId = ctx.params.metaId;
+    const thumbId = ctx.params.thumbId;
+    const thumb = await plexApi.thumb(token, [metaId, thumbId]) as Blob;
+
+    ctx.response.headers.set('Content-Type', 'image/png');
+    ctx.response.body = await thumb.bytes();
+};
+
+export async function getArt (ctx) {
+    const owner = await groups.getGroupOwner({ code: ctx.params.id.toUpperCase().trim() });
+    const token = owner.token;
+
+    const metaId = ctx.params.metaId;
+    const artId = ctx.params.artId;
+    const art = await plexApi.art(token, [metaId, artId]);
+
+    ctx.response.headers.set('Content-Type', 'image/png');
+    ctx.response.body = await art.bytes();
+};

@@ -1,0 +1,44 @@
+<% 
+    const movie = it.movie; 
+    const idx = it.idx;
+%>
+
+<div class="j-movie-card card is-hidden" data-idx="<%= idx %>" data-id="<%= movie.id %>">
+  <div class="card-image">
+    <figure class="image">
+      <img
+        width="400px;"
+        src="<%= movie.art || '' %>"
+        alt="Placeholder image"
+      />
+    </figure>
+  </div>
+
+  <div class="card-content">
+
+    <div class="media">
+      <div class="media-left">
+        <figure class="image is-48x48">
+          <img
+            src="<%= movie.thumb || '' %>"
+            alt="Placeholder image"
+          />
+        </figure>
+      </div>
+      <div class="media-content">
+        <p class="title is-4"><%= movie.title %></p>
+        <p class="subtitle is-6"><%= movie.tagline %> </p>
+      </div>
+    </div>
+
+    <div class="content">
+        <%= movie.summary %>
+    </div>
+  </div>
+
+  <footer class="card-footer">
+    <a id="j-dislike-movie" class="card-footer-item has-text-danger">Dislike</a>
+    <a id="j-like-movie" class="card-footer-item has-text-primary">Like</a>
+  </footer>
+
+</div>

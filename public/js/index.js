@@ -1,10 +1,16 @@
+let group = null;
+let selectedIdx = 0;
+let maxIdx = 0;
+
 $(document).ready(function() {
     const { ws } = setupSockets();
 
     ws.addEventListener("message", (e) => {
         try {
             const data = JSON.parse(e.data);
-            updateGroup(data); 
+            group = data.group;
+            updateGroup(data.group);
+            updateUser(data.user);
         } catch (e) {
             console.log(e);
             console.log("received_ws", e.data)
@@ -16,15 +22,70 @@ $(document).ready(function() {
     plexAuthentication();
     groupActions();
     headerActions();
+    updateMovieCards();
+ 
+    $(document).on('click', '#j-like-movie', function (e) {
+        const $movie = $(this).parents('.j-movie-card');
+        const id = $movie.data('id');
+        const idx = $movie.data('idx');
+        const newIdx = idx + 1;
+        
+        const $nextMovie = $(`.j-movie-card[data-idx="${newIdx}"]`);
+        if ($nextMovie.length) {
+            $movie.addClass('is-hidden');
+            $nextMovie.removeClass('is-hidden');
+            
+            selectedIdx = newIdx;
+            maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
+        }
+
+        updateProgress();
+    });
+
+    $(document).on('click', '#j-dislike-movie', function (e) {
+        const $movie = $(this).parents('.j-movie-card');
+        const id = $movie.data('id');
+        const idx = $movie.data('idx');
+        const newIdx = idx - 1;
+        
+        const $nextMovie = $(`.j-movie-card[data-idx="${newIdx}"]`);
+        if ($nextMovie.length) {
+            $movie.addClass('is-hidden');
+            $nextMovie.removeClass('is-hidden');
+
+            selectedIdx = newIdx;
+            maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
+        }
+    });
 });
+
+function updateProgress () {
+    const progress = Math.floor((maxIdx + 1.0) / $('.j-movie-card').length * 100);
+
+    $('#j-pick-progress').val(progress);
+    $('#j-pick-progress').text(progress);
+}
+
+function updateUser (user) {
+    console.log(user); 
+}
+
+function updateMovieCards () {
+    const $selectedCard = $(`.j-movie-card[data-idx="${selectedIdx}"]`);
+    $selectedCard.removeClass('is-hidden');
+}
 
 function updateGroup (group) {
     $.ajax({
-        url: `/groups/${group.code}/table`,
+        url: `/groups/${group.code}/info`,
         method: 'get'
     }).done((data) => {
         if (data.html) {
-            $('#j-members-table').html(data.html);
+            $('#j-group-info').html(data.html);
+            if (group.movies?.length) {
+                updateMovieCards();
+                updateProgress();
+            }
         }
     });
 }
@@ -39,7 +100,7 @@ function headerActions () {
             url: `/users?alias=${$updateAliasInput.val()}`,
             method: 'patch'
         }).done((data) => {
-            ws.send('hello');
+            ws.send('update');
         }).always(() => {
             $updateAlias.removeClass('is-loading');
         });
@@ -50,6 +111,18 @@ function groupActions () {
     const $createButton = $('#j-create-group');
     const $joinButton = $('#j-join-group');
     const $joinInput = $('#j-join-input');
+
+    $(document).on('click','#j-group-pick', function (e) {
+        if (group && group.code) {
+            $.ajax({
+                url: `/groups/${group.code}/movies`,
+                method: 'put'
+            }).done((data) => {
+                ws.send('update');
+            }).always(() => {
+            });
+        }
+    });
 
     $createButton.on('click', function (e) {
         $createButton.addClass('is-loading');

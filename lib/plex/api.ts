@@ -1,5 +1,5 @@
-import * as request from '../utils/request';
-import type { Section, Library, Media, MediaMetadata, Movie } from '../../types/plex';
+import * as request from '../utils/request.ts';
+import type { Section, Library, Media, MediaMetadata, Movie } from '../../types/plex.ts';
 
 const apiUrl = (token: string, apiPath: string): string => {
     const plexPath = Deno.env.get('PLEX_HOST');
@@ -43,8 +43,8 @@ const mapMovie = (groupId: string, movie: Media) : Movie => ({
         .map((ele: MediaMetadata) => ele.attributes.tag),
     tagline: movie.attributes.tagline,
     summary: movie.attributes.summary,
-    thumb: `/api/group/${groupId}/plex` + movie.attributes.thumb,
-    art: `/api/group/${groupId}/plex`  + movie.attributes.art,
+    thumb: movie.attributes.thumb ? `/groups/${groupId}/plex` + movie.attributes.thumb : null,
+    art: movie.attributes.art ? `/groups/${groupId}/plex`  + movie.attributes.art : null,
     contentRating: movie.attributes.contentRating,
     duration: movie.attributes.duration
 });
