@@ -1,32 +1,28 @@
-<% if (it.group.owner == it.user.id) { %>
-    <nav class="breadcrumb is-centered has-arrow-separator" aria-label="breadcrumbs">
-      <ul>
-        <li <% if (it.group.stage == 'assemble') { %> class="is-active" <% } %>><a aria-current="page" href="#">Assemble</a></li>
-        <li <% if (it.group.stage == 'picks') { %> class="is-active" <% } %>><a id="j-group-pick" href="#">Pick</a></li>
-        <li <% if (it.group.stage == 'results') { %> class="is-active" <% } %>><a id="" href="#">Results</a></li>
-      </ul>
-    </nav>
-<% } %>
+<% if (it.group && it.group?.stage == 'assemble') { %>
+    <div class="is-flex is-flex-direction-column is-justify-content-center">
+        <% if (it.group.owner == it.user.id && it.group.stage == 'assemble') { %>
+            <div class="is-flex is-justify-content-center mb-6">
+                <button id="j-group-pick" class="button is-warning">Pick</button>
+            </div>
+        <% } %>
 
-<% if (it.group.stage == 'picks') { %>
-    <progress id="j-pick-progress" class="progress is-info" value="0" max="100">
-      0%
-    </progress>
-<% } %>
+        <% if (it.group.stage == 'assemble' && it.members[it.group.owner]) { %>
+            <div class="container is-flex is-justify-content-center  is-align-content-space-around">
+                <% const owner = it.members[it.group.owner]; %>
+                <%= owner.alias %> is the&nbsp;<strong class="has-text-info">Owner</strong>
+            </div>
+        <% } %>
 
-<% if (it.group.stage == 'assemble' && it.members[it.group.owner]) { %>
-    <div class="container is-flex is-justify-content-center  is-align-content-space-around">
-        <% const owner = it.members[it.group.owner]; %>
-        <%= owner.alias %> is the&nbsp;<strong class="has-text-info">Owner</strong>
-    </div>
-<% } %>
-
-<% if (it.group && it.group?.stage == 'assemble' && it?.members && Object.keys(it.members).length) { %>
-    <div class="container is-flex is-justify-content-center  is-align-content-space-around">
-        <%~ include('/content/members-table', it); %>
+        <% if (it.group && it.group?.stage == 'assemble' && it?.members && Object.keys(it.members).length) { %>
+            <div class="container is-flex is-justify-content-center  is-align-content-space-around">
+                <%~ include('/content/members-table', it); %>
+            </div>
+        <% } %>
     </div>
 <% } else if (it.group && it.group?.stage == 'picks' && it.group?.movies?.length) { %>
-    <% it.group.movies.forEach((movie, i) => { %>
-        <%~ include ('./components/movie-card', { movie, idx: i }); %>
-    <% }); %>
+    <div class="is-flex is-flex-direction-row is-justify-content-center">
+        <% it.group.movies.forEach((movie, i) => { %>
+            <%~ include ('./components/movie-card', { movie, idx: i }); %>
+        <% }); %>
+    </div>
 <% } %>

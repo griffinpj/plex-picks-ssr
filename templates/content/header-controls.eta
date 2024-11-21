@@ -1,33 +1,36 @@
-<section class="section">
+<section class="section <%= it.group?.code ? 'is-hidden' : '' %>" <% if (it.group?.code) { %> data-stage="assemble" <% } %>>
     <div class="hero is-info">
         <div class="hero-body">
             <% if (it.group && it.group.code) { %>
-                <p class="title"> <%= it.group.code %> </p>
-                <p class="subtitle"> Assemble your <strong>party!</strong></p>
+                <p class="title is-hidden" data-stage="assemble"> <%= it.group.code %> </p>
+                <p class="subtitle is-hidden" data-stage="assemble"> Assemble your <strong>party!</strong></p>
+                <p class="subtitle is-hidden" data-stage="picks"> Choose your <strong>picks!</strong></p>
             <% } else { %>
                 <p class="title"> Plex picks </p>
                 <p class="subtitle"> Choose your <strong>movie!</strong></p>
             <% } %>
-            <div class="level">
-                <div class="level-right">
-                    <button class="button is-<%= it.user.token ? 'primary' : 'warning' %> j-authenticate-plex" <% if (it.user.token) { %> disabled <% } %>>
-                        <span>
-                            <%= it.user.token ? 'Authenticated' : 'Authenticate' %>
-                        </span>
-                    </button>
-                </div>
-
-                <div class="field has-addons">
-                    <div class="control">
-                        <input id="j-alias-input" class="input is-normal" type="text" value="<%= it.user.alias || '' %>" placeholder="Update alias">
-                    </div>
-                    <div class="control">
-                        <button id="j-update-alias" class="button is-success">
-                            Update
+            <% if (!it.group?.code) {%>
+                <div class="level">
+                    <div class="level-right">
+                        <button class="button is-<%= it.user.token ? 'primary' : 'warning' %> j-authenticate-plex" <% if (it.user.token) { %> disabled <% } %>>
+                            <span>
+                                <%= it.user.token ? 'Authenticated' : 'Authenticate' %>
+                            </span>
                         </button>
                     </div>
+                    
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input id="j-alias-input" class="input is-normal" type="text" value="<%= it.user.alias || '' %>" placeholder="Update alias">
+                        </div>
+                        <div class="control">
+                            <button id="j-update-alias" class="button is-success">
+                                Update
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            <% } %>
         </div>
     </div>
 </section>

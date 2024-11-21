@@ -25,10 +25,14 @@ export async function getThumbnail (ctx) {
 
     const metaId = ctx.params.metaId;
     const thumbId = ctx.params.thumbId;
-    const thumb = await plexApi.thumb(token, [metaId, thumbId]) as Blob;
-
-    ctx.response.headers.set('Content-Type', 'image/png');
-    ctx.response.body = await thumb.bytes();
+    try {
+        const thumb = await plexApi.thumb(token, [metaId, thumbId]) as Blob;
+        ctx.response.headers.set('Content-Type', 'image/png');
+        ctx.response.body = await thumb.bytes();
+    } catch (e) {
+        ctx.response.status = 400;
+        return;
+    }
 };
 
 export async function getArt (ctx) {
@@ -37,8 +41,12 @@ export async function getArt (ctx) {
 
     const metaId = ctx.params.metaId;
     const artId = ctx.params.artId;
-    const art = await plexApi.art(token, [metaId, artId]);
 
-    ctx.response.headers.set('Content-Type', 'image/png');
-    ctx.response.body = await art.bytes();
+    try {
+        const art = await plexApi.art(token, [metaId, artId]);
+        ctx.response.headers.set('Content-Type', 'image/png');
+        ctx.response.body = await art.bytes();
+    } catch (e) {
+        ctx.response.status = 400;
+    }
 };

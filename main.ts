@@ -31,18 +31,21 @@ const layer = new InMemoryLayer();
 
 class EchoConsumer extends BaseConsumer {
     async onConnect() {
+        const self = this;
         const ctx = this.context;
         const channel = ctx.state.session.get('channel');
         
         if (channel) {
-            await this.groupJoin(channel);
-            const group = await groups.getGroup({
-                code: channel
-            });
-            await this.layer.groupSend(channel, JSON.stringify({
-                group:  group,
-                user: ctx.state.user
-            }));
+            setTimeout(async function () {
+                await self.groupJoin(channel);
+                const group = await groups.getGroup({
+                    code: channel
+                });
+                await self.layer.groupSend(channel, JSON.stringify({
+                    group:  group,
+                    user: ctx.state.user
+                }));
+            }, 1000);
         }
     }
 

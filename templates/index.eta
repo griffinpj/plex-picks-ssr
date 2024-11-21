@@ -4,8 +4,16 @@
     <body>
         <%~ include ('/content/header-controls', it); %>
         <% if (it.group?.code && it.group?.members) { %>
-            <section id="j-group-info" class="section">
-                <%~ include ('/content/group-info', it); %>
+            <div data-stage="picks" class="is-hidden pt-3 pb-3 pl-3 pr-3" style="position: sticky; top: 0px; z-index: 10; border-radius: 0; background-color: rgba(0,0,0,0); background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);" >
+                <progress id="j-pick-progress" class="progress is-info is-large mt-3" value="0" max="100" >
+                  0%
+                </progress>
+            </div>
+
+            <section class="section is-flex is-flex-direction-column is-justify-content-center pt-3 mt-3">
+                <div id="j-group-info" class=" is-flex is-flex-direction-column is-justify-content-center">
+                    <progress class="progress is-large is-info" max="100">10%</progress>
+                </div>
             </section>
         <% } else { %>
             <%~ include ('/content/group-controls', it); %>

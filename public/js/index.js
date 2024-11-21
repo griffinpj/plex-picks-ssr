@@ -8,85 +8,97 @@ $(document).ready(function() {
     ws.addEventListener("message", (e) => {
         try {
             const data = JSON.parse(e.data);
-            group = data.group;
-            updateGroup(data.group);
+            updateGroup(group, data.group);
             updateUser(data.user);
         } catch (e) {
             console.log(e);
-            console.log("received_ws", e.data)
         }
     });
 
     window.ws = ws;
+    window.addEventListener("beforeunload", function(event) {
+        ws.close();
+    });   
     
     plexAuthentication();
     groupActions();
     headerActions();
     updateMovieCards();
- 
-    $(document).on('click', '#j-like-movie', function (e) {
-        const $movie = $(this).parents('.j-movie-card');
-        const id = $movie.data('id');
-        const idx = $movie.data('idx');
-        const newIdx = idx + 1;
-        
-        const $nextMovie = $(`.j-movie-card[data-idx="${newIdx}"]`);
-        if ($nextMovie.length) {
-            $movie.addClass('is-hidden');
-            $nextMovie.removeClass('is-hidden');
-            
-            selectedIdx = newIdx;
-            maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
-        }
 
-        updateProgress();
+    // Movie navigation
+    $(document).on('click', '#j-like-movie', function (e) {
+        navigate(true, getActiveMovie());
     });
 
     $(document).on('click', '#j-dislike-movie', function (e) {
-        const $movie = $(this).parents('.j-movie-card');
-        const id = $movie.data('id');
-        const idx = $movie.data('idx');
-        const newIdx = idx - 1;
-        
-        const $nextMovie = $(`.j-movie-card[data-idx="${newIdx}"]`);
-        if ($nextMovie.length) {
-            $movie.addClass('is-hidden');
-            $nextMovie.removeClass('is-hidden');
-
-            selectedIdx = newIdx;
-            maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
-        }
+        navigate(true, getActiveMovie());
     });
 });
 
+function getActiveMovie () {
+    return $(`.j-movie-card[data-idx="${selectedIdx}"]`);
+}
+
+function navigate (forward, $movie, saved) {
+    const idx = $movie.data('idx');
+    const newIdx = saved ?? (forward ? idx + 1 : idx - 1);
+    
+    const $nextMovie = $(`.j-movie-card[data-idx="${newIdx}"]`);
+    if ($nextMovie.length) {
+        $movie.addClass('is-hidden');
+        $nextMovie.removeClass('is-hidden');
+        
+        selectedIdx = newIdx;
+        maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
+
+        if (group?.code) {
+            localStorage.setItem(`${group.code}-idx`, maxIdx);
+        }
+    }
+    updateProgress();
+};
+
 function updateProgress () {
     const progress = Math.floor((maxIdx + 1.0) / $('.j-movie-card').length * 100);
-
     $('#j-pick-progress').val(progress);
     $('#j-pick-progress').text(progress);
 }
 
 function updateUser (user) {
-    console.log(user); 
+    // console.log(user); 
 }
 
 function updateMovieCards () {
-    const $selectedCard = $(`.j-movie-card[data-idx="${selectedIdx}"]`);
-    $selectedCard.removeClass('is-hidden');
+    getActiveMovie().removeClass('is-hidden');
 }
 
-function updateGroup (group) {
+function updateGroup (old, updated) {
+    if (old?.stage !== updated?.stage) {
+        $(`[data-stage]`).addClass('is-hidden');
+        $(`[data-stage="${updated?.stage}"]`).removeClass('is-hidden');
+    }
+
+    
     $.ajax({
-        url: `/groups/${group.code}/info`,
+        url: `/groups/${updated.code}/info`,
         method: 'get'
     }).done((data) => {
         if (data.html) {
             $('#j-group-info').html(data.html);
-            if (group.movies?.length) {
+            if (updated.movies?.length) {
                 updateMovieCards();
                 updateProgress();
+
+                if (updated?.code) {
+                    const savedIdx = localStorage.getItem(`${updated.code}-idx`);
+                    if (savedIdx) {
+                        navigate(null, $('.j-movie-card'), Number(savedIdx));
+                    }
+                }
             }
         }
+
+        group = updated;
     });
 }
 
@@ -113,13 +125,19 @@ function groupActions () {
     const $joinInput = $('#j-join-input');
 
     $(document).on('click','#j-group-pick', function (e) {
+        const $pickButton = $('#j-group-pick');
+
         if (group && group.code) {
+            $pickButton.addClass('is-loading');
             $.ajax({
                 url: `/groups/${group.code}/movies`,
                 method: 'put'
-            }).done((data) => {
-                ws.send('update');
             }).always(() => {
+                $pickButton.removeClass('is-loading');
+                ws.send(JSON.stringify({
+                    action: 'update',
+                    resource: 'stage',
+                }));
             });
         }
     });
@@ -186,7 +204,6 @@ function setupSockets() {
     const scheme = window.location.protocol === "http:" ? "ws" : "wss";
     const baseURL = `${scheme}://${host}`;
     const ws = new WebSocket(baseURL + '/ws');
-
     
     return { ws };
 }
