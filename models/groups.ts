@@ -1,24 +1,25 @@
 import { db } from '../configs/db.ts';
 
+const pg = db();
+
 export async function getGroupOwner (options) {
-    const store = db();
     const { code } = options;
     
-    let data = store.query(`
+    let data = await pg`
         SELECT
-            JSON_EXTRACT(s.data, '$.id') AS sessionId, 
-            JSON_EXTRACT(s.data, '$.alias') AS alias,
-            JSON_EXTRACT(s.data, '$.plex-token') AS token
+            (s.data::json ->> 'id') AS session_id, 
+            (s.data::json ->> 'alias') AS alias,
+            (s.data::json ->> 'plex-token') AS token
         FROM sessions s
         JOIN groups g
-        ON g.owner = sessionId
-        AND g.code = ?;
-    `, [code]);
+        ON g.owner = (s.data::json ->> 'id')
+        AND g.code = ${ code };
+    `;
 
     data = data.map((member) => ({
-        id: member[0],
-        alias: member[1],
-        token: member[2]
+        id: member.session_id,
+        alias: member.alias,
+        token: member.token
     })); 
 
     if (!data || !data.length) {
@@ -29,101 +30,109 @@ export async function getGroupOwner (options) {
 }
 
 export async function updateGroupStage(options) {
-    const store = db();
     const {
         code,
         stage
     } = options;
 
-    return store.query(`
+    return await pg`
         UPDATE groups 
-        SET stage = ?
-        WHERE code = ?;
-    `, [stage, code]);
+        SET stage = ${ stage }
+        WHERE code = ${ code };
+    `;
 }
 
 export async function updateGroupMovies(options) {
-    const store = db();
     const {
         code,
         movies
     } = options;
 
-    return store.query(`
+    return await pg`
         UPDATE groups 
-        SET movies = ?
-        WHERE code = ?;
-    `, [JSON.stringify(movies), code]);
+        SET movies = ${ movies }
+        WHERE code = ${ code };
+    `;
 }
 
 export async function updateGroupMembers(options) {
-    const store = db();
     const {
         code,
         members
     } = options;
 
-    return store.query(`
+    return await pg`
         UPDATE groups 
-        SET members = ?
-        WHERE code = ?;
-    `, [JSON.stringify(members), code]);
+        SET members = ${ members }
+        WHERE code = ${ code };
+    `;
 }
 
 export async function getMembers(options) {
-    const store = db();
     const { code } = options;
     
-    let data = store.query(`
+    let data = await pg`
         SELECT
-            JSON_EXTRACT(s.data, '$.id') AS sessionId, 
-            JSON_EXTRACT(s.data, '$.alias') AS alias
+            (s.data::json ->> 'id') AS session_id, 
+            (s.data::json ->> 'alias') AS alias
         FROM sessions s
         JOIN groups g
-        ON g.members LIKE '%' || sessionId || '%'
-        AND g.code = ?;
-    `, [code]);
+        ON (s.data::json ->> 'id') = ANY(g.members) 
+        AND g.code = ${ code };
+    `;
 
     data = data.reduce((acc, member) => ({
         ...acc, 
-        [member[0]]: {
-            id: member[0],
-            alias: member[1]
+        [member.session_id]: {
+            id: member.session_id,
+            alias: member.alias
         }
     }), {}); 
+
 
     return data;
 };
 
 export async function getGroup(options) {
-    const store = db();
     const { code } = options;
 
-    const data = store.query(`
-        SELECT code, owner, members, stage, movies FROM groups WHERE code = ?;
-    `, [code]);
+    if (!code) {
+        return null;
+    }
 
-    if (!data.length) {
+    const data = await pg`
+        SELECT code, owner, members, stage, movies, id 
+        FROM groups 
+        WHERE code = ${ code };
+    `;
+
+    if (!data?.length) {
         return [];
     }
 
     const record = data[0];
     return {
-        code: record[0],
-        owner: record[1],
-        members: JSON.parse(record[2]),
-        stage: record[3],
-        movies: JSON.parse(record[4])
+        code: record.code,
+        owner: record.owner,
+        members: record.members,
+        stage: record.stage,
+        movies: record.movies,
+        id: record.id
     };
 };
 
 export async function createGroup(options) {
-    const store = db();
     const { code, user } = options;
 
-    const members = JSON.stringify([user.id]); 
-
-    return await store.query(`
-        INSERT INTO groups (code, owner, members, stage, movies) VALUES (?, ?, ?, ?, ?) RETURNING code;
-    `, [code, user.id, members, 'assemble', JSON.stringify([])]);
+    return await pg`
+        INSERT INTO groups (code, owner, members, stage, movies) 
+        VALUES (
+            ${ code }, 
+            ${ user.id }, 
+            ${ [ user.id ] }, 
+            ${ 'assemble' }, 
+            ${ [] }
+        ) 
+        RETURNING code;
+    `;
 };

@@ -31,7 +31,16 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '#j-dislike-movie', function (e) {
-        navigate(true, getActiveMovie());
+        navigate(false, getActiveMovie());
+    });
+
+    $(document).on('update-server', function (e, data) {
+        const { id, liked } = data;
+
+        ws.send(JSON.stringify({
+            action: 'update.pick',
+            data: { id, liked }
+        }));
     });
 });
 
@@ -39,9 +48,9 @@ function getActiveMovie () {
     return $(`.j-movie-card[data-idx="${selectedIdx}"]`);
 }
 
-function navigate (forward, $movie, saved) {
+function navigate (liked, $movie, saved) {
     const idx = $movie.data('idx');
-    const newIdx = saved ?? (forward ? idx + 1 : idx - 1);
+    const newIdx = saved ?? idx + 1;
     
     const $nextMovie = $(`.j-movie-card[data-idx="${newIdx}"]`);
     if ($nextMovie.length) {
@@ -52,7 +61,11 @@ function navigate (forward, $movie, saved) {
         maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
 
         if (group?.code) {
+            // save pick progress to client in case of refresh
             localStorage.setItem(`${group.code}-idx`, maxIdx);
+
+            // trigger update to the server
+            $(document).trigger('update-server', { id: $movie.data('id'), liked });
         }
     }
     updateProgress();
@@ -78,7 +91,6 @@ function updateGroup (old, updated) {
         $(`[data-stage="${updated?.stage}"]`).removeClass('is-hidden');
     }
 
-    
     $.ajax({
         url: `/groups/${updated.code}/info`,
         method: 'get'
@@ -106,13 +118,24 @@ function headerActions () {
     const $updateAliasInput = $('#j-alias-input');
     const $updateAlias = $('#j-update-alias');
 
+
+
     $updateAlias.on('click', function () {
+        if (!$updateAliasInput.val()) {
+            return;
+        }
+
         $updateAlias.addClass('is-loading');
         $.ajax({
             url: `/users?alias=${$updateAliasInput.val()}`,
             method: 'patch'
         }).done((data) => {
-            ws.send('update');
+            ws.send(JSON.stringify({
+                action: 'update.alias',
+                data: {
+                    alias: $updateAliasInput.val()
+                }
+            }));
         }).always(() => {
             $updateAlias.removeClass('is-loading');
         });

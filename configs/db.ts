@@ -1,20 +1,15 @@
-import { DB } from "https://deno.land/x/sqlite/mod.ts";
+import postgres from 'https://deno.land/x/postgresjs@v3.1.0/mod.js'
 
-let sqlite;
+// Create a postgres connection, or use an existing one
+const pg = postgres({
+    host: Deno.env.get('DB_HOST'),
+    port: Deno.env.get('DB_PORT'),
+    database: Deno.env.get('DB_NAME'),
+    user: Deno.env.get('DB_USER'),
+    password: Deno.env.get('DB_PSW'),
+});
+
 export function db () {
-    if (!sqlite) {
-        sqlite = new DB('./database.db');
-        sqlite.query(`
-            CREATE TABLE IF NOT EXISTS groups (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                code TEXT,
-                owner TEXT,
-                members TEXT,
-                stage TEXT,
-                movies TEXT
-            )
-        `);
-    }
-    
-    return sqlite;
-};
+    return pg;
+}
+

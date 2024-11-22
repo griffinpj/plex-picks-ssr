@@ -12,14 +12,13 @@ export default async function (ctx) {
         user
     });
 
-
     if (!data.length) {
         ctx.response.status = Status.BAD;
         return;
     }
 
     const record = data[0];
-    const groupCode = record[0]
+    const groupCode = record.code
 
     if (!groupCode) {
         ctx.response.status = Status.BAD;

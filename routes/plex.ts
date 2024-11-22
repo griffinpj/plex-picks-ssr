@@ -27,9 +27,16 @@ export async function getThumbnail (ctx) {
     const thumbId = ctx.params.thumbId;
     try {
         const thumb = await plexApi.thumb(token, [metaId, thumbId]) as Blob;
+        
+        if (!thumb || !thumb.bytes) {
+            ctx.response.status = 400;
+            return;
+        }
+
         ctx.response.headers.set('Content-Type', 'image/png');
         ctx.response.body = await thumb.bytes();
     } catch (e) {
+        console.log(e);
         ctx.response.status = 400;
         return;
     }
@@ -44,6 +51,11 @@ export async function getArt (ctx) {
 
     try {
         const art = await plexApi.art(token, [metaId, artId]);
+        if (!art || !art?.bytes) {
+            ctx.response.status = 400;
+            return;
+        }
+
         ctx.response.headers.set('Content-Type', 'image/png');
         ctx.response.body = await art.bytes();
     } catch (e) {

@@ -9,8 +9,8 @@
                 <p class="title"> Plex picks </p>
                 <p class="subtitle"> Choose your <strong>movie!</strong></p>
             <% } %>
-            <% if (!it.group?.code) {%>
-                <div class="level">
+            <div class="level">
+                <% if (!it.group?.code) {%>
                     <div class="level-right">
                         <button class="button is-<%= it.user.token ? 'primary' : 'warning' %> j-authenticate-plex" <% if (it.user.token) { %> disabled <% } %>>
                             <span>
@@ -18,19 +18,19 @@
                             </span>
                         </button>
                     </div>
-                    
-                    <div class="field has-addons">
-                        <div class="control">
-                            <input id="j-alias-input" class="input is-normal" type="text" value="<%= it.user.alias || '' %>" placeholder="Update alias">
-                        </div>
-                        <div class="control">
-                            <button id="j-update-alias" class="button is-success">
-                                Update
-                            </button>
-                        </div>
+                <% } %>
+                
+                <div class="field has-addons">
+                    <div class="control">
+                        <input id="j-alias-input" class="input is-normal" type="text" value="<%= it.user.alias || '' %>" placeholder="Update alias">
+                    </div>
+                    <div class="control">
+                        <button id="j-update-alias" class="button is-success">
+                            Update
+                        </button>
                     </div>
                 </div>
-            <% } %>
+            </div>
         </div>
     </div>
 </section>

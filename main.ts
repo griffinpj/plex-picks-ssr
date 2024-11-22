@@ -1,75 +1,22 @@
 import {
     Application,
-    HttpServerStd,
-    Router,
+    HttpServerStd
 } from "https://deno.land/x/oak@v9.0.0/mod.ts";
-import { Session, SqliteStore } from "https://deno.land/x/oak_sessions/mod.ts";
+import { Session, PostgresStore } from "https://deno.land/x/oak_sessions/mod.ts";
 import logger from "https://deno.land/x/oak_logger/mod.ts";
 import { Eta } from "https://deno.land/x/eta@v3.1.0/src/index.ts";
 import * as path from "jsr:@std/path";
 
-import {
-    BaseConsumer,
-    InMemoryLayer,
-    JSONConsumer,
-    mountConsumer,
-} from "https://deno.land/x/oak_channels/mod.ts";
-
 import * as plexClient from './lib/plex/client.ts';
 
+import Router from './routes/router.ts';
+
 import { db } from './configs/db.ts';
-import routes from './routes/index.ts';
-import * as groups from './models/groups.ts';
 
 const app = new Application({ serverConstructor: HttpServerStd });
-const sqlite = db();
+const pg = db();
 
-// Pass DB instance into a new SqliteStore. Optionally add a custom table name as second string argument, default is 'sessions'
-const store = new SqliteStore(sqlite);
-
-const layer = new InMemoryLayer();
-
-class EchoConsumer extends BaseConsumer {
-    async onConnect() {
-        const self = this;
-        const ctx = this.context;
-        const channel = ctx.state.session.get('channel');
-        
-        if (channel) {
-            setTimeout(async function () {
-                await self.groupJoin(channel);
-                const group = await groups.getGroup({
-                    code: channel
-                });
-                await self.layer.groupSend(channel, JSON.stringify({
-                    group:  group,
-                    user: ctx.state.user
-                }));
-            }, 1000);
-        }
-    }
-
-    // handle group messages
-    async onGroupMessage(group: string, message: string | Uint8Array) {
-        this.send(message)
-    }
-
-    // handle client messages
-    async onText(text: string) {
-        const ctx = this.context;
-        const channel = ctx.state.session.get('channel');
-        const group = await groups.getGroup({
-            code: channel
-        });
-
-        await this.layer.groupSend(channel, JSON.stringify({
-            group:  group,
-            user: ctx.state.user
-        }));
-    }
-}
-
-const router = new Router();
+const store = new PostgresStore(pg);
 
 app.use(logger.logger)
 app.use(logger.responseTime)
@@ -93,6 +40,7 @@ app.use(async (ctx, next) => {
     let token = ctx.state.session.get('plex-token');
     let alias = ctx.state.session.get('alias');
     let picks = ctx.state.session.get('picks');
+    let channel = ctx.state.session.get('channel');
 
     if (pin && !token) {
         token = await plexClient.checkForAuthToken(pin);
@@ -142,7 +90,8 @@ app.use(async (ctx, next) => {
         id: sessionId,
         pin,
         token,
-        picks
+        picks,
+        channel
     };
 
     return await next();
@@ -160,15 +109,9 @@ app.use(async (context, next) => {
     }
 });
 
-router.all("/ws", mountConsumer(EchoConsumer, layer));
-
-routes.forEach((route) => {
-    router[route.method](route.path, route.handler);
-});
-
+const router = Router();
 app.use(router.routes());
 app.use(router.allowedMethods());
-
 
 app.addEventListener('error', (evt) => {
     console.log(evt.error)

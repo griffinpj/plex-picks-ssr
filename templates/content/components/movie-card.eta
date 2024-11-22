@@ -3,11 +3,12 @@
     const idx = it.idx;
 %>
 
-<div class="j-movie-card card is-hidden" data-idx="<%= idx %>" data-id="<%= movie.id %>">
+<div class="j-movie-card card is-hidden" data-idx="<%= idx %>" data-id="<%= movie.id %>" style="min-height: 900;">
 
   <div class="card-image">
     <figure class="image ">
       <img
+        loading="lazy"
         src="<%= movie.thumb || '' %>"
         alt="Placeholder image"
       />
@@ -20,6 +21,7 @@
             <figure class="image is-48x48">
 
               <img
+                loading="lazy"
                 src="<%= movie.thumb || '' %>"
                 alt="Placeholder image"
               />
