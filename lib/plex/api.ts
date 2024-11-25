@@ -1,9 +1,9 @@
 import * as request from '../utils/request.ts';
 import type { Section, Library, Media, MediaMetadata, Movie } from '../../types/plex.ts';
 
-const apiUrl = (token: string, apiPath: string): string => {
+const apiUrl = (token: string, apiPath: string, image: Boolean = false): string => {
     const plexPath = Deno.env.get('PLEX_HOST');
-    return `http://${plexPath}${apiPath}?X-Plex-Token=${token}`;
+    return `http://${plexPath}${apiPath}${image ? '&' : '?'}X-Plex-Token=${token}`;
 };
 
 const fetchSection = async (token: string, type: string): Promise<Section> => {
@@ -22,15 +22,15 @@ const fetchMedia = async (token: string, lib: Section) => {
 };
 
 const fetchArt = async (token: string, ids: string []): Promise<Blob> => {
-    const url = `/library/metadata/${ids[0]}/art/${ids[1]}`;
+    const url = `/photo/:/transcode?width=720&height=480&minSize=1&upscale=1&url=${encodeURIComponent(`/library/metadata/${ids[0]}/art/${ids[1]}`)}`;
 
-    return request.get(apiUrl(token, url), 'img');
+    return request.get(apiUrl(token, url, true), 'img');
 };
 
-const fetchThumbnail = async (token: string, ids: string []): Promise<Blob> => {
-    const url = `/library/metadata/${ids[0]}/thumb/${ids[1]}`;
+const fetchThumbnail = async (token: string, ids: string [], options: { width: String, height: String }): Promise<Blob> => {
+    const url = `/photo/:/transcode?width=${options?.width || '480'}&height=${options?.height || '720'}&minSize=1&upscale=1&url=${encodeURIComponent(`/library/metadata/${ids[0]}/thumb/${ids[1]}`)}`;
 
-    return request.get(apiUrl(token, url), 'img');
+    return request.get(apiUrl(token, url, true), 'img');
 };
 
 const mapMovie = (groupId: string, movie: Media) : Movie => ({
@@ -57,12 +57,12 @@ export const art = async (token: string | null, ids: string []): Promise<ImageDa
     return fetchArt(token, ids);
 }
 
-export const thumb = async (token: string | null, ids: string []): Promise<ImageData> => {
+export const thumb = async (token: string | null, ids: string [], options: { width: String, height: String }): Promise<ImageData> => {
     if (!token) {
         throw new Error('Missing token');
     }
    
-    return fetchThumbnail(token, ids);
+    return fetchThumbnail(token, ids, options);
 }
 
 export const movies = async (groupId: string, token: string | null): Promise<Movie[]> => {

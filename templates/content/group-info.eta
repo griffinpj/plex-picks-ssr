@@ -20,9 +20,14 @@
         <% } %>
     </div>
 <% } else if (it.group && it.group?.stage == 'picks' && it.group?.movies?.length) { %>
-    <div class="is-flex is-flex-direction-row is-justify-content-center">
-        <% it.group.movies.forEach((movie, i) => { %>
-            <%~ include ('./components/movie-card', { movie, idx: i }); %>
-        <% }); %>
+    <% if (it.user.totalPicks < 20) { %>
+        <div id="j-movies-container" class="is-flex is-flex-direction-row is-justify-content-center">
+            <% it.group.movies.forEach((movie, i) => { %>
+                <%~ include ('./components/movie-card', { movie, idx: i }); %>
+            <% }); %>
+        </div>
+    <% } %>
+    <div id="j-waiting-container" class="is-flex is-flex-direction-column is-justify-content-center">
+        Waiting for others to finish picking
     </div>
 <% } %>

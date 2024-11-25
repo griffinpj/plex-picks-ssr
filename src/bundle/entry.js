@@ -2,14 +2,21 @@ let group = null;
 let selectedIdx = 0;
 let maxIdx = 0;
 
+let restored = false;
+
 $(document).ready(function() {
     const { ws } = setupSockets();
 
     ws.addEventListener("message", (e) => {
         try {
             const data = JSON.parse(e.data);
-            updateGroup(group, data.group);
-            updateUser(data.user);
+
+            switch (data.action) {
+                case 'group.update':
+                    updateGroup(group, data.group);
+                    break;
+            }
+
         } catch (e) {
             console.log(e);
         }
@@ -56,29 +63,28 @@ function navigate (liked, $movie, saved) {
     if ($nextMovie.length) {
         $movie.addClass('is-hidden');
         $nextMovie.removeClass('is-hidden');
+    }
         
-        selectedIdx = newIdx;
-        maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
+    selectedIdx = newIdx;
+    maxIdx = newIdx > maxIdx ? newIdx : maxIdx;
 
-        if (group?.code) {
-            // save pick progress to client in case of refresh
-            localStorage.setItem(`${group.code}-idx`, maxIdx);
+    if (group?.code) {
+        // save pick progress to client in case of refresh
+        localStorage.setItem(`${group.code}-idx`, maxIdx);
 
-            // trigger update to the server
-            $(document).trigger('update-server', { id: $movie.data('id'), liked });
-        }
+        // trigger update to the server
+        $(document).trigger('update-server', { id: $movie.data('id'), liked });
     }
     updateProgress();
 };
 
 function updateProgress () {
-    const progress = Math.floor((maxIdx + 1.0) / $('.j-movie-card').length * 100);
-    $('#j-pick-progress').val(progress);
-    $('#j-pick-progress').text(progress);
-}
-
-function updateUser (user) {
-    // console.log(user); 
+    const progress = Math.floor((maxIdx) / $('.j-movie-card').length * 100);
+    
+    if ($('.j-movie-card').length) {
+        $('#j-pick-progress').val(progress);
+        $('#j-pick-progress').text(progress);
+    }
 }
 
 function updateMovieCards () {
@@ -99,14 +105,16 @@ function updateGroup (old, updated) {
             $('#j-group-info').html(data.html);
             if (updated.movies?.length) {
                 updateMovieCards();
-                updateProgress();
 
                 if (updated?.code) {
                     const savedIdx = localStorage.getItem(`${updated.code}-idx`);
-                    if (savedIdx) {
+                    if (savedIdx && !restored) {
                         navigate(null, $('.j-movie-card'), Number(savedIdx));
                     }
+                    restored = true;
                 }
+
+                updateProgress();
             }
         }
 
@@ -158,8 +166,8 @@ function groupActions () {
             }).always(() => {
                 $pickButton.removeClass('is-loading');
                 ws.send(JSON.stringify({
-                    action: 'update',
-                    resource: 'stage',
+                    action: 'update.stage',
+                    data: { stage: 'picks' },
                 }));
             });
         }
@@ -174,7 +182,7 @@ function groupActions () {
             if (data.code) {
                 window.location = `/groups/${data.code}`;
             }
-        }).always(() => {
+        }).fail(() => {
             $createButton.removeClass('is-loading');
         });
     });
@@ -198,7 +206,7 @@ function groupActions () {
             if (data.code) {
                 window.location = `/groups/${data.code}`;
             }
-        }).always(() => {
+        }).fail(() => {
             $joinButton.removeClass('is-loading');
         });
     });

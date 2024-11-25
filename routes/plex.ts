@@ -20,13 +20,19 @@ export async function authenticate (ctx) {
 };
 
 export async function getThumbnail (ctx) {
+
+    // TODO can't get query params for some reason???
+    // const width = ctx.request.url.searchParams.get('width');
+    // const height = ctx.request.url.searchParams.get('height');
+
+
     const owner = await groups.getGroupOwner({ code: ctx.params.id.toUpperCase().trim() });
     const token = owner.token;
 
     const metaId = ctx.params.metaId;
     const thumbId = ctx.params.thumbId;
     try {
-        const thumb = await plexApi.thumb(token, [metaId, thumbId]) as Blob;
+        const thumb = await plexApi.thumb(token, [metaId, thumbId], {}) as Blob;
         
         if (!thumb || !thumb.bytes) {
             ctx.response.status = 400;
@@ -36,6 +42,7 @@ export async function getThumbnail (ctx) {
         ctx.response.headers.set('Content-Type', 'image/png');
         ctx.response.body = await thumb.bytes();
     } catch (e) {
+        // TODO if plex can't load image, fetch better placeholder img for tag or handle more gracefully
         console.log(e);
         ctx.response.status = 400;
         return;

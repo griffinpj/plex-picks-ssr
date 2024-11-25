@@ -9,34 +9,34 @@
     <figure class="image ">
       <img
         loading="lazy"
+        width="480"
+        height="720"
         src="<%= movie.thumb || '' %>"
-        alt="Placeholder image"
+        style="transition-duration: 1s;"
       />
     </figure>
   </div>
-    <div background-image: url(<%= movie.art %>); background-size: cover; background-position: center 25%;">
-      <div class="card-content" style="background-color: rgba(0, 0, 0, 0.7); z-index: 1; border-radius: 0;  backdrop-filter: blur(10px);">
-        <div class="media">
-          <div class="media-left">
-            <figure class="image is-48x48">
+  <div class="card-content">
+    <div class="media">
+      <div class="media-left">
+        <figure class="image is-48x48">
 
-              <img
-                loading="lazy"
-                src="<%= movie.thumb || '' %>"
-                alt="Placeholder image"
-              />
-            </figure>
-          </div>
+          <img
+            loading="lazy"
+            src="<%= movie.thumb + '&width=120&height=180' || '' %>"
+            alt="Placeholder image"
+          />
+        </figure>
+      </div>
 
-          <div class="media-content">
-            <p class="title is-4"><%= movie.title %></p>
-            <p class="subtitle is-6"><%= movie.tagline %> </p>
-          </div>
-        </div>
-
-        <div class="content"> <%= movie.summary %> </div>
+      <div class="media-content">
+        <p class="title is-4"><%= movie.title %></p>
+        <p class="subtitle is-6"><%= movie.tagline %> </p>
+      </div>
     </div>
-  </div>
+
+    <div class="content"> <%= movie.summary %> </div>
+</div>
 
   <footer class="card-footer">
     <a id="j-dislike-movie" class="card-footer-item has-text-danger">Dislike</a>

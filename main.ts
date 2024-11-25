@@ -8,10 +8,10 @@ import { Eta } from "https://deno.land/x/eta@v3.1.0/src/index.ts";
 import * as path from "jsr:@std/path";
 
 import * as plexClient from './lib/plex/client.ts';
-
 import Router from './routes/router.ts';
-
 import { db } from './configs/db.ts';
+
+import * as picks from './models/picks.ts';
 
 const app = new Application({ serverConstructor: HttpServerStd });
 const pg = db();
@@ -39,8 +39,8 @@ app.use(async (ctx, next) => {
     const pin = ctx.state.session.get('plex-pin');
     let token = ctx.state.session.get('plex-token');
     let alias = ctx.state.session.get('alias');
-    let picks = ctx.state.session.get('picks');
     let channel = ctx.state.session.get('channel');
+
 
     if (pin && !token) {
         token = await plexClient.checkForAuthToken(pin);
@@ -84,13 +84,22 @@ app.use(async (ctx, next) => {
         alias = randomAliases[randomIndex];
         ctx.state.session.set('alias', alias);
     }
+    
+    let totalPicks = 0;
+    if (channel) {
+        const groupPicks = await picks.getForGroupByUser({ code: channel });
+        
+        const myPicks = groupPicks.find((count) => count.user_id === sessionId);
+        const myPickCount = myPicks && myPicks.picks ? Number(myPicks.picks) : 0;
+        totalPicks = myPickCount;
+    }
 
     ctx.state.user = {
         alias,
         id: sessionId,
         pin,
         token,
-        picks,
+        totalPicks: totalPicks,
         channel
     };
 

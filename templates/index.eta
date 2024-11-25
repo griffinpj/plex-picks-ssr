@@ -5,8 +5,8 @@
         <%~ include ('/content/header-controls', it); %>
         <% if (it.group?.code && it.group?.members) { %>
             <div data-stage="picks" class="is-hidden pt-3 pb-3 pl-3 pr-3" style="position: sticky; top: 0px; z-index: 10; border-radius: 0; background-color: rgba(0,0,0,0); background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);" >
-                <progress id="j-pick-progress" class="progress is-info is-large mt-3" value="0" max="100" >
-                  0%
+                <progress id="j-pick-progress" class="progress is-info is-large mt-3" value="<%= it.user.totalPicks < 20 ? 0 : 100 %>" max="100" >
+                    <%= it.user.totalPicks < 20 ? '0%' : '100%' %>
                 </progress>
             </div>
 

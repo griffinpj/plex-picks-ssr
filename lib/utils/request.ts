@@ -8,6 +8,7 @@ export async function get (url: string, type = 'json') {
         });
 
         if (!response.ok) {
+            console.log(await response.text());
             throw new Error('Network response was not ok');
         }
 

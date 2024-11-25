@@ -2,6 +2,35 @@ import { db } from '../configs/db.ts';
 
 const pg = db();
 
+export async function getForGroupByUser(options) {
+    const {
+        code
+    } = options;
+
+    if (!code) {
+        return;
+    }
+
+    const data = await pg`
+        SELECT
+            p.user_id,
+            COUNT(p.*) AS picks
+        FROM picks p
+        JOIN (
+            SELECT
+                s.data::json ->> 'id' AS user_id, 
+                s.data::json ->> 'alias' AS alias,
+                s.data::json ->> 'channel' AS channel
+            FROM sessions s
+            WHERE s.data::json ->> 'channel' = ${ code }
+        ) s ON s.user_id = p.user_id
+        WHERE p.group_code = ${ code }
+        GROUP BY p.user_id;
+    `;
+
+    return data;
+};
+
 export async function getForGroup(options) {
     const {
         code
@@ -11,7 +40,7 @@ export async function getForGroup(options) {
         return;
     }
 
-    return await pg`
+    const data = await pg`
         SELECT
             p.movie_id,
             SUM(CASE WHEN p.liked = TRUE Then 1 ELSE 0 END) AS likes,
@@ -23,13 +52,17 @@ export async function getForGroup(options) {
                 s.data::json ->> 'alias' AS alias,
                 s.data::json ->> 'channel' AS channel
             FROM sessions s
-            WHERE s.data::json ->> 'channel' = ${ code }; 
+            WHERE s.data::json ->> 'channel' = ${ code }
         ) s ON s.user_id = p.user_id
         WHERE p.group_code = ${ code }
         GROUP BY p.movie_id;
     `;
+
+    return data;
 };
 
+
+// TODO account for duplicates... don't allow it
 export async function addGroupMemberPick(options) {
     const {
         userId,
