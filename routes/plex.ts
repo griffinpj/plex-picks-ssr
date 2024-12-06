@@ -20,11 +20,8 @@ export async function authenticate (ctx) {
 };
 
 export async function getThumbnail (ctx) {
-
-    // TODO can't get query params for some reason???
-    // const width = ctx.request.url.searchParams.get('width');
-    // const height = ctx.request.url.searchParams.get('height');
-
+    const width = ctx.request.url.searchParams.get('width');
+    const height = ctx.request.url.searchParams.get('height');
 
     const owner = await groups.getGroupOwner({ code: ctx.params.id.toUpperCase().trim() });
     const token = owner.token;
@@ -32,7 +29,7 @@ export async function getThumbnail (ctx) {
     const metaId = ctx.params.metaId;
     const thumbId = ctx.params.thumbId;
     try {
-        const thumb = await plexApi.thumb(token, [metaId, thumbId], {}) as Blob;
+        const thumb = await plexApi.thumb(token, [metaId, thumbId], { width, height }) as Blob;
         
         if (!thumb || !thumb.bytes) {
             ctx.response.status = 400;

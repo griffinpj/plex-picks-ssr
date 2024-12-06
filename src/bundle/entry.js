@@ -81,7 +81,11 @@ function navigate (liked, $movie, saved) {
 function updateProgress () {
     const progress = Math.floor((maxIdx) / $('.j-movie-card').length * 100);
     
+
     if ($('.j-movie-card').length) {
+        if (maxIdx === 20) {
+        }
+
         $('#j-pick-progress').val(progress);
         $('#j-pick-progress').text(progress);
     }
@@ -119,6 +123,10 @@ function updateGroup (old, updated) {
         }
 
         group = updated;
+    }).fail(() => {
+        $('#j-group-info').html(`
+            Something went wrong that wasn't supposed to. Blame the developer...
+        `);
     });
 }
 

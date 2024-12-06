@@ -27,7 +27,16 @@
             <% }); %>
         </div>
     <% } %>
-    <div id="j-waiting-container" class="is-flex is-flex-direction-column is-justify-content-center">
+    <div id="j-waiting-container" class="<%= it.user.totalPicks < 20 ? 'is-hidden' : 'is-flex is-flex-direction-column is-justify-content-center' %>">
         Waiting for others to finish picking
     </div>
+<% } else if (it.group.stage === 'results') { %>
+    <% if (it.finalPick) { %>
+        <h1 class="title">Results</h1>
+        <h2 class="subtitle"><%= `${it.finalPick.likes} likes` %></h1>
+
+        <%~ include ('./components/movie-card', { movie: it.finalPick, final: true, idx: 0 }); %>
+    <% } else { %>
+        Something went wrong. Blame the developer.
+    <% } %>
 <% } %>

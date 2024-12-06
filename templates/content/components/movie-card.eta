@@ -3,12 +3,16 @@
     const idx = it.idx;
 %>
 
-<div class="j-movie-card card is-hidden" data-idx="<%= idx %>" data-id="<%= movie.id %>" style="min-height: 900;">
-
+<div class="<%= it.final ? 'j-final-movie-card' : 'j-movie-card is-hidden' %> card" data-idx="<%= idx %>" data-id="<%= movie.id %>" style="min-height: 900;">
+    <% if (it.final) { %>
+    <header class="p-3">
+        <p class="title is-4"><%= movie.title %></p>
+        <p class="subtitle is-6"><%= movie.tagline %> </p>
+    </header>
+    <% } %>
   <div class="card-image">
     <figure class="image ">
       <img
-        loading="lazy"
         width="480"
         height="720"
         src="<%= movie.thumb || '' %>"
@@ -16,14 +20,14 @@
       />
     </figure>
   </div>
+<% if (!it.final) { %>
   <div class="card-content">
     <div class="media">
       <div class="media-left">
         <figure class="image is-48x48">
 
           <img
-            loading="lazy"
-            src="<%= movie.thumb + '&width=120&height=180' || '' %>"
+            src="<%= movie.thumb + '?width=60&height=90' || '' %>"
             alt="Placeholder image"
           />
         </figure>
@@ -37,10 +41,13 @@
 
     <div class="content"> <%= movie.summary %> </div>
 </div>
+    <% } %>
 
-  <footer class="card-footer">
-    <a id="j-dislike-movie" class="card-footer-item has-text-danger">Dislike</a>
-    <a id="j-like-movie" class="card-footer-item has-text-primary">Like</a>
-  </footer>
+    <% if (!it.final) { %>
+      <footer class="card-footer">
+        <a id="j-dislike-movie" class="card-footer-item has-text-danger">Dislike</a>
+        <a id="j-like-movie" class="card-footer-item has-text-primary">Like</a>
+      </footer>
+    <% } %>
 
 </div>

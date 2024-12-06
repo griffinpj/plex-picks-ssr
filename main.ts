@@ -1,7 +1,6 @@
 import {
-    Application,
-    HttpServerStd
-} from "https://deno.land/x/oak@v9.0.0/mod.ts";
+    Application
+} from "https://deno.land/x/oak@v17.1.3/mod.ts";
 import { Session, PostgresStore } from "https://deno.land/x/oak_sessions/mod.ts";
 import logger from "https://deno.land/x/oak_logger/mod.ts";
 import { Eta } from "https://deno.land/x/eta@v3.1.0/src/index.ts";
@@ -13,7 +12,7 @@ import { db } from './configs/db.ts';
 
 import * as picks from './models/picks.ts';
 
-const app = new Application({ serverConstructor: HttpServerStd });
+const app = new Application();
 const pg = db();
 
 const store = new PostgresStore(pg);
@@ -37,9 +36,9 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
     const sessionId = ctx.state.session.get('id');
     const pin = ctx.state.session.get('plex-pin');
+    const channel = ctx.state.session.get('channel');
     let token = ctx.state.session.get('plex-token');
     let alias = ctx.state.session.get('alias');
-    let channel = ctx.state.session.get('channel');
 
 
     if (pin && !token) {

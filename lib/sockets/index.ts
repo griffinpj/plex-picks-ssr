@@ -6,6 +6,7 @@ import {
 
 import * as groups from '../../models/groups.ts';
 import * as picks from '../../models/picks.ts';
+import * as utils from '../utils/common.ts';
 
 export function sockets () {
     const layer = new InMemoryLayer();
@@ -58,18 +59,18 @@ export function sockets () {
                             group
                         }));
 
-                        // TODO transition group to results stage if all users have completed all picks...
-                        // if (userPickCount && userPickCount.picks) {
-                        //     await groups.updateGroupStage({ code: group.code, stage: 'waiting' });
-                        //     const updatedGroup = await groups.getGroup({ code: group.code });
+                        if (await utils.isGroupFinished(group)) {
+                            await groups.updateGroupStage({ code: group.code, stage: 'results' });
+                            const updatedGroup = await groups.getGroup({ code: group.code });
     
 
-                        //     // TODO possibly redirect to /groups/:id/results ??
-                        //     // to render the eta better???
-                        //     this.layer.groupSend(JSON.stringify({
-                        //         group: updatedGroup
-                        //     }));
-                        // }
+                            // TODO possibly redirect to /groups/:id/results ??
+                            // to render the eta better???
+                            await this.layer.groupSend(channel, JSON.stringify({
+                                action: 'group.update',
+                                group: updatedGroup
+                            }));
+                        }
 
                         break;
                     }
