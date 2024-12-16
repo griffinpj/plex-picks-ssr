@@ -85,82 +85,106 @@
 
 ![image](https://github.com/user-attachments/assets/7babd2f8-9977-4877-806c-27d61a3018db)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+Helping you and your friends finally decide on what movie to watch.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
+Plex Picks helps you choose what movie to watch by collecting votes on a group of 20 randomly selected movies.
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
+The movie with the most votes among participants will be *picked*! In case of multiple movies with the same votes, Plex Picks
+will choose the newest movie or the longest movie if release years are the same.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [![Deno][Deno.js]][Deno-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+- [Deno](http://deno.com)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Oak](https://deno.land/x/oak@v17.1.3)
+- [Web Sockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running follow these simple example steps after cloning the project.
 
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
-* npm
+
+* Install Deno *[docs](https://docs.deno.com/runtime/)*
   ```sh
-  npm install npm@latest -g
+  curl -fsSL https://deno.land/install.sh | sh
+  ```
+* Setup new PostgreSQL user and database for Plex Picks
+  
+  ```sh
+  # Login to postgres console
+  psql -U postgres
+  ```
+  
+  ```sql
+    -- Create the new user in Postgres
+  CREATE USER newuser WITH PASSWORD 'password';
+  
+  -- Create a new database
+  CREATE DATABASE newdatabase; 
+  
+  -- Grant all privileges to the new user for the database 
+  GRANT ALL PRIVILEGES ON DATABASE newdatabase TO newuser;
   ```
 
 ### Installation
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
+   
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/griffinpj/plex-picks-ssr.git
    ```
-3. Install NPM packages
+3. Install Deno packages
+   
    ```sh
-   npm install
+   deno install
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
+5. Update .env variables
+   
    ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
+   # .env
+   PLEX_HOST = 
+   PLEX_CLIENT = 
+   PLEX_PRODUCT = Plex Picks
+   PLEX_FORWARD_URL = http://localhost:8080/
+   DB_HOST = 
+   DB_PORT = 
+   DB_NAME = 
+   DB_USER = 
+   DB_PSW = 
    ```
+7. Bundle application
+   
+  ```sh
+  deno run bundle
+  ```
+5. Run application
+   
+  ```sh
+  deno run dev
+  ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Screenshots
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+![image](https://github.com/user-attachments/assets/8f813096-8dcb-4649-aa88-006c164e33a5)
+![image](https://github.com/user-attachments/assets/f5149ce5-a038-47de-bca8-7b2cf8dd439c)
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
