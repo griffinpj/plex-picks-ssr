@@ -44,9 +44,9 @@
     <br />
     <a href="https://plexpicks.griff.la">View Demo</a>
     ·
-    <a href="[https://github.com/othneildrew/Best-README-Template](https://github.com/griffinpj/plex-picks-ssr)/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/griffinpj/plex-picks-ssr/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="[https://github.com/othneildrew/Best-README-Template](https://github.com/griffinpj/plex-picks-ssr)/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/griffinpj/plex-picks-ssr/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -83,7 +83,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![image](https://github.com/user-attachments/assets/7babd2f8-9977-4877-806c-27d61a3018db)
 
 There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
 
@@ -99,18 +99,11 @@ Use the `BLANK_README.md` to get started.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 ### Built With
 
 This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
+* [![Deno][Deno.js]][Deno-url]
 * [![JQuery][JQuery.com]][JQuery-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
