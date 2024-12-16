@@ -178,10 +178,13 @@ _Below is an example of how you can instruct your audience on installing and set
 ## Screenshots
 
 <p float="left">
-  <img src="https://github.com/user-attachments/assets/b419d243-b01e-4823-bcf8-c9d607ba1cfe" width="500" />
-  <img src="https://github.com/user-attachments/assets/8fccd4cb-ff23-45e0-b501-089bf73706f0" width="500" />
-  <img src="https://github.com/user-attachments/assets/a84a835f-85b4-4c18-9389-11bcadce00bf" width="500" />
-  <img src="https://github.com/user-attachments/assets/d4305717-4c94-48ee-bd5f-f63ba1735a93" width="500" />
+  <img src="https://github.com/user-attachments/assets/b419d243-b01e-4823-bcf8-c9d607ba1cfe" width="300" />
+  <img src="https://github.com/user-attachments/assets/8fccd4cb-ff23-45e0-b501-089bf73706f0" width="300" />
+</p>
+<p float="left">
+
+  <img src="https://github.com/user-attachments/assets/a84a835f-85b4-4c18-9389-11bcadce00bf" width="300" />
+  <img src="https://github.com/user-attachments/assets/d4305717-4c94-48ee-bd5f-f63ba1735a93" width="300" />
 </p>
 <p float="left">
   <img src="https://github.com/user-attachments/assets/69e683b4-2ffe-4e68-9246-3a5a519411ab" width="500" /> 
