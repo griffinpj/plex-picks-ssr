@@ -83,7 +83,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![image](https://github.com/user-attachments/assets/7babd2f8-9977-4877-806c-27d61a3018db)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7babd2f8-9977-4877-806c-27d61a3018db" with="300" />
+</p>
 
 Helping you and your friends finally decide on what movie to watch.
 
@@ -148,7 +150,7 @@ _Below is an example of how you can instruct your audience on installing and set
    ```sh
    deno install
    ```
-5. Update .env variables
+4. Update .env variables
    
    ```sh
    # .env
@@ -162,40 +164,44 @@ _Below is an example of how you can instruct your audience on installing and set
    DB_USER = 
    DB_PSW = 
    ```
-7. Bundle application
-   
-  ```sh
-  deno run bundle
-  ```
-5. Run application
-   
-  ```sh
-  deno run dev
-  ```
+5. Bundle application
+   ```sh
+   deno run bundle
+   ```
+6. Run application
+   ```sh
+   deno run dev
+   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Screenshots
 
-![image](https://github.com/user-attachments/assets/8f813096-8dcb-4649-aa88-006c164e33a5)
-![image](https://github.com/user-attachments/assets/f5149ce5-a038-47de-bca8-7b2cf8dd439c)
-
-
-
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/b419d243-b01e-4823-bcf8-c9d607ba1cfe" width="500" />
+  <img src="https://github.com/user-attachments/assets/8fccd4cb-ff23-45e0-b501-089bf73706f0" width="500" />
+  <img src="https://github.com/user-attachments/assets/a84a835f-85b4-4c18-9389-11bcadce00bf" width="500" />
+  <img src="https://github.com/user-attachments/assets/d4305717-4c94-48ee-bd5f-f63ba1735a93" width="500" />
+</p>
+<p float="left">
+  <img src="https://github.com/user-attachments/assets/69e683b4-2ffe-4e68-9246-3a5a519411ab" width="500" /> 
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
+- [x] Plex authentication
+- [x] User groups
+- [x] Vote on movies
+- [x] Movie results
+- [ ] Refactor project types
+- [ ] Update entire UI on ws message
+- [ ] Optimize thumbnail loading
+  - [ ] Placeholder images for loading
+
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 
@@ -206,17 +212,6 @@ See the [open issues](https://github.com/othneildrew/Best-README-Template/issues
 ## License
 
 Distributed under the Unlicense License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
