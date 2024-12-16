@@ -28,9 +28,6 @@ export default async function (ctx) {
         }
 
         finalPick = mappedPicks[0];
-        console.log(finalPick);
-
-        console.log(mappedPicks);
     }
 
     ctx.response.body = { 
