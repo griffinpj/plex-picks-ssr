@@ -25,13 +25,12 @@
 [![Unlicense License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-
 <!-- PROJECT LOGO -->
 <br />
+
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/griffinpj/plex-picks-ssr">
+    <img src="https://github.com/user-attachments/assets/e8f211b2-89ef-4664-920b-d6ea9fa59c5f" alt="Logo" width="200">
   </a>
 
   <h3 align="center">Plex Picks</h3>
