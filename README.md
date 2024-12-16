@@ -205,19 +205,19 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/yo
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/griffinpj/plex-picks-ssr.svg?style=for-the-badge
+[contributors-url]: https://github.com/griffinpj/plex-picks-ssr/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/griffinpj/plex-picks-ssr.svg?style=for-the-badge
+[forks-url]: https://github.com/griffinpj/plex-picks-ssr/network/members
+[stars-shield]: https://img.shields.io/github/stars/griffinpj/plex-picks-ssr.svg?style=for-the-badge
+[stars-url]: https://github.com/griffinpj/plex-picks-ssr/stargazers
+[issues-shield]: https://img.shields.io/github/issues/griffinpj/plex-picks-ssr.svg?style=for-the-badge
+[issues-url]: https://github.com/griffinpj/plex-picks-ssr/issues
+[license-shield]: https://img.shields.io/github/license/griffinpj/plex-picks-ssr.svg?style=for-the-badge
+[license-url]: https://github.com/griffinpj/plex-picks-ssr/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+[linkedin-url]: https://linkedin.com/in/griffin-johnson-462393134/
+
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
