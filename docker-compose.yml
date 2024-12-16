@@ -1,0 +1,22 @@
+version: '1.0'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PLEX_HOST:  ${PLEX_HOST}
+      PLEX_CLIENT: ${PLEX_CLIENT}
+      PLEX_PRODUCT: ${PLEX_PRODUCT} 
+      PLEX_FORWARD_URL: ${PLEX_FORWARD_URL}
+      DB_HOST: ${DB_HOST} 
+      DB_PORT: ${DB_PORT} 
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PSW: ${DB_PSW}
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - app-net
+networks:
+  app-net:
